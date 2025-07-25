@@ -92,7 +92,7 @@ def summarize_with_gemini(articles):
     
     # Gemini API 호출
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
         
         headers = {
             'Content-Type': 'application/json',
@@ -152,6 +152,11 @@ def send_telegram_message(message):
         
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     
+    # HTML 특수문자 이스케이프
+    message = message.replace('&', '&amp;')
+    message = message.replace('<', '&lt;')
+    message = message.replace('>', '&gt;')
+    
     # 텔레그램 메시지 길이 제한 (4096자)
     if len(message) > 4000:
         message = message[:3997] + "..."
@@ -160,7 +165,7 @@ def send_telegram_message(message):
         "chat_id": TELEGRAM_CHAT_ID,
         "text": message,
         "disable_web_page_preview": True,
-        "parse_mode": "Markdown"  # HTML 대신 Markdown 사용
+        "parse_mode": "HTML"  # HTML 사용
     }
     
     try:
