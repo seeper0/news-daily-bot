@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 import feedparser
-import openai
+from openai import OpenAI
 import requests
 import os
 from datetime import datetime
 import time
 
 # API 설정
-openai.api_key = os.environ['OPENAI_API_KEY']
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 TELEGRAM_BOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
 
@@ -72,7 +72,7 @@ def summarize_with_gpt(articles):
     
     # GPT API 호출
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "당신은 AI와 게임 개발 동향을 전문적으로 요약하는 어시스턴트입니다. 한국어로 간결하고 명확하게 요약해주세요."},
