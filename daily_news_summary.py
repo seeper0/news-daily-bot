@@ -31,6 +31,10 @@ def fetch_feeds():
     """RSS 피드에서 최신 기사 수집"""
     all_articles = {}
     
+    # 월요일인지 확인 (주말 뉴스 더 많이 수집)
+    is_monday = datetime.now().weekday() == 0
+    max_articles = 10 if is_monday else 5  # 월요일은 10개, 평일은 5개
+    
     for category, feeds in RSS_FEEDS.items():
         articles = []
         for feed_url in feeds:
@@ -38,8 +42,8 @@ def fetch_feeds():
                 print(f"📡 피드 수집 중: {feed_url}")
                 feed = feedparser.parse(feed_url)
                 
-                # 피드당 최대 5개 기사
-                for entry in feed.entries[:5]:
+                # 피드당 최대 기사 수
+                for entry in feed.entries[:max_articles]:
                     title = entry.get('title', 'No title')
                     link = entry.get('link', '')
                     summary = entry.get('summary', '')
